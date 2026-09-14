@@ -33,10 +33,10 @@
 </footer>
 <!-- /SITE FOOTER -->
 
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/main.js"></script>
-<script src="js/app.js"></script>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/app.js"></script>
 
 <!-- WHATSAPP FLOAT -->
 <a href="https://wa.me/62274586168" target="_blank" class="whatsapp-float">

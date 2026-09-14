@@ -2,7 +2,7 @@
 $errors = [];
 $username = '';
 $email = '';
-include "config/config.php";
-include "components/header.php";
-include "components/body.php";
-include "components/footer.php";
+include "app/config/config.php";
+include "app/components/header.php";
+include "app/components/body.php";
+include "app/components/footer.php";

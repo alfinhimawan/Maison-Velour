@@ -13,9 +13,9 @@ if (isset($_GET['save_currency'])) {
     header("Location: " . $current_url);
     exit();
 }
-$user_country_code = isset($_SESSION['user_country_code']) ? $_SESSION['user_country_code'] : 'id';
-$user_currency_code = isset($_SESSION['user_currency_code']) ? $_SESSION['user_currency_code'] : 'IDR';
-$user_language = isset($_SESSION['user_language']) ? $_SESSION['user_language'] : 'ID';
+$user_country_code = isset($_SESSION['user_country_code']) ? $_SESSION['user_country_code'] : 'fr';
+$user_currency_code = isset($_SESSION['user_currency_code']) ? $_SESSION['user_currency_code'] : 'EUR';
+$user_language = isset($_SESSION['user_language']) ? $_SESSION['user_language'] : 'EN';
 ?>
 
 <!DOCTYPE html>
@@ -27,9 +27,9 @@ $user_language = isset($_SESSION['user_language']) ? $_SESSION['user_language'] 
     <meta name="description" content="MAISON VELOUR — Premium Fragrance, Wear your signature scent.">
     <title>MAISON VELOUR — Premium Fragrance</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/style.css?v=16">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
     <style>
         * {
             margin: 0;
@@ -162,9 +162,9 @@ $user_language = isset($_SESSION['user_language']) ? $_SESSION['user_language'] 
             <?php $current_page = basename($_SERVER['PHP_SELF']); ?>
             <div class="nav-left">
                 <a href="index.php" class="<?php echo ($current_page == 'index.php' || $current_page == '') ? 'active' : ''; ?>">HOME</a>
-                <a href="#" onclick="showDevModal(event)">SHOPS</a>
-                <a href="collection.php" class="<?php echo ($current_page == 'collection.php') ? 'active' : ''; ?>">COLLECTION</a>
-                <a href="about.php" class="<?php echo ($current_page == 'about.php') ? 'active' : ''; ?>">ABOUT US</a>
+                <a href="shop.php" class="<?php echo ($current_page == 'shop.php') ? 'active' : ''; ?>">SHOP</a>
+                <a href="collection.php" class="<?php echo ($current_page == 'collection.php') ? 'active' : ''; ?>">LOOKBOOK</a>
+                <a href="about.php" class="<?php echo ($current_page == 'about.php') ? 'active' : ''; ?>">LA MAISON</a>
             </div>
             <div class="nav-logo">
                 <a href="index.php">MAISON VELOUR</a>
@@ -176,10 +176,6 @@ $user_language = isset($_SESSION['user_language']) ? $_SESSION['user_language'] 
                         <img src="https://flagcdn.com/w20/<?= htmlspecialchars($user_country_code) ?>.png" alt="Flag" style="width:18px; border-radius:2px; border:1px solid #eee;">
                         <span style="font-size:12px; font-weight:800;"><?= htmlspecialchars($user_currency_code) ?></span>
                     </a>
-
-
-
-
                     <!-- CURRENCY POPUP -->
                     <?php
                     // Fetch countries from database
@@ -215,7 +211,11 @@ $user_language = isset($_SESSION['user_language']) ? $_SESSION['user_language'] 
                                 </div>
                                 <select class="real-select" name="languageSelect">
                                     <option value="EN" <?= $user_language == 'EN' ? 'selected' : '' ?>>English</option>
-                                    <option value="ID" <?= $user_language == 'ID' ? 'selected' : '' ?>>Bahasa Indonesia</option>
+                                    <option value="FR" disabled>Français (Coming Soon)</option>
+                                    <option value="ID" disabled>Bahasa Indonesia (Coming Soon)</option>
+                                    <option value="MS" disabled>Bahasa Melayu (Coming Soon)</option>
+                                    <option value="ZH" disabled>中文 - Simplified Chinese (Coming Soon)</option>
+                                    <option value="AR" disabled>العربية - Arabic (Coming Soon)</option>
                                 </select>
                             </div>
 
@@ -284,7 +284,7 @@ $user_language = isset($_SESSION['user_language']) ? $_SESSION['user_language'] 
                     <button type="button" class="close" data-dismiss="modal" style="position:absolute;right:18px;top:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#999;">&times;</button>
                     <span class="modal-tag">LOGIN</span>
                     <p class="modal-subtitle">Welcome back to MAISON VELOUR</p>
-                    <?php include "components/login_form.php"; ?>
+                    <?php include "app/components/login_form.php"; ?>
                 </div>
             </div>
         </div>
@@ -298,7 +298,7 @@ $user_language = isset($_SESSION['user_language']) ? $_SESSION['user_language'] 
                     <button type="button" class="close" data-dismiss="modal" style="position:absolute;right:18px;top:14px;background:none;border:none;font-size:22px;cursor:pointer;color:#999;">&times;</button>
                     <span class="modal-tag">REGISTER</span>
                     <p class="modal-subtitle">Create account to earn points, get free vouchers, and hear our news earlier.</p>
-                    <?php include "components/register_form.php"; ?>
+                    <?php include "app/components/register_form.php"; ?>
                 </div>
             </div>
         </div>
@@ -321,18 +321,18 @@ $user_language = isset($_SESSION['user_language']) ? $_SESSION['user_language'] 
 
             <div class="cart-recent-title">You Might Also Like</div>
             <div class="cart-recent-grid">
+                <?php
+                // Get 2 random products from database for cross-selling
+                $rand_query = mysqli_query($db, "SELECT * FROM products ORDER BY RAND() LIMIT 2");
+                while($rp = mysqli_fetch_assoc($rand_query)):
+                ?>
                 <div class="cart-recent-item">
-                    <img src="images/products/perfume_amber_lifestyle.jpg" class="cart-recent-img" alt="L'Ambre Doré">
+                    <img src="assets/images/products/<?php echo htmlspecialchars($rp['image']); ?>" class="cart-recent-img" alt="<?php echo htmlspecialchars($rp['name']); ?>" style="object-fit:cover;">
                     <div class="cart-recent-add" onclick="showDevModal(event)"><i class="fa fa-shopping-bag" style="font-size:11px; transform: translateY(-1px);"></i></div>
-                    <div class="cart-recent-name">L'AMBRE DORÉ</div>
-                    <div class="cart-recent-price">IDR 1.750.000</div>
+                    <div class="cart-recent-name"><?php echo strtoupper(htmlspecialchars($rp['name'])); ?></div>
+                    <div class="cart-recent-price"><?php echo formatPrice($rp['price']); ?></div>
                 </div>
-                <div class="cart-recent-item">
-                    <img src="images/products/perfume_velvet_lifestyle.jpg" class="cart-recent-img" alt="Velours Cramoisi">
-                    <div class="cart-recent-add" onclick="showDevModal(event)"><i class="fa fa-shopping-bag" style="font-size:11px; transform: translateY(-1px);"></i></div>
-                    <div class="cart-recent-name">VELOURS CRAMOISI</div>
-                    <div class="cart-recent-price">IDR 2.800.000</div>
-                </div>
+                <?php endwhile; ?>
             </div>
         </div>
     </div>

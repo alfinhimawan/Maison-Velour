@@ -1,6 +1,6 @@
 <?php
-include "config/config.php";
-include "components/header.php";
+include "app/config/config.php";
+include "app/components/header.php";
 ?>
 
 <style>
@@ -215,4 +215,4 @@ include "components/header.php";
 </script>
 
 <?php
-include "components/footer.php";
+include "app/components/footer.php";
