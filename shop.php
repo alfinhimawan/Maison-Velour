@@ -10,10 +10,15 @@ while ($row = $cat_query->fetch_assoc()) {
 }
 
 $vol_query = $db->query("SELECT DISTINCT volume FROM products WHERE volume IS NOT NULL AND volume != '' ORDER BY volume ASC");
-$volumes = [];
+$raw_volumes = [];
 while ($row = $vol_query->fetch_assoc()) {
-    $volumes[] = $row['volume'];
+    // Normalize dirty database inputs (e.g., '100 ML', '100ml ', '100 ml') to a strict '100ml' format
+    $clean_vol = strtolower(str_replace(' ', '', trim($row['volume'])));
+    if (!in_array($clean_vol, $raw_volumes)) {
+        $raw_volumes[] = $clean_vol;
+    }
 }
+$volumes = $raw_volumes;
 
 $lbl_query = $db->query("SELECT DISTINCT label FROM products WHERE label IS NOT NULL AND label != '' AND label != 'PRE-ORDER' ORDER BY label ASC");
 $labels = [];
